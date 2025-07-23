@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagrama Entidad-Relación por Rol</title>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+      body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 2rem; }
+      h1 { text-align: center; }
+      h2 { margin-top: 2rem; }
+      .mermaid { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2rem; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <h1>Diagrama Entidad-Relación por Rol</h1>
+    <h2>Administrador</h2>
+    <div class="mermaid">
+      erDiagram
+        administrador {
+          int id PK
+          varchar nombre
+          varchar correo
+          varchar contrasena
+        }
+        administrador ||--o{ administrador : "crea administradores"
+        administrador ||--o{ usuario : "crea usuarios " 
+        administrador ||--o{ almacenista : "crea almacenistas"
+        administrador ||--o{ vendedor : "crea vendedores"
+    </div>
+    <h2>Almacenista</h2>
+    <div class="mermaid">
+      erDiagram
+        almacenista {
+          int id PK
+          varchar nombre
+          varchar correo
+          varchar contrasena
+        }
+        proveedor {
+          int id PK
+          varchar nombre
+          varchar telefono
+          varchar correo
+          varchar direccion
+          datetime fecha_creacion
+        }
+        bodega {
+          int id PK
+          varchar nombre
+          varchar ubicacion
+          datetime fecha_creacion
+        }
+        almacenista ||--o{ proveedor : "crea proveedores"
+        almacenista ||--o{ bodega : "crea bodegas"
+    </div>
+    <h2>Vendedor</h2>
+    <div class="mermaid">
+      erDiagram
+        vendedor {
+          int id PK
+          varchar nombre
+          varchar correo
+          varchar contrasena
+        }
+        productos_ventas {
+          int id PK
+          int cliente_id FK
+          datetime fecha
+          varchar factura
+          int cantidad
+        }
+        vendedor ||--o{ productos_ventas : "registra ventas"
+    </div>
+    <h2>Cliente</h2>
+    <div class="mermaid">
+      erDiagram
+        cliente {
+          int id PK
+          varchar nombre
+          varchar correo
+          varchar contrasena
+          varchar rol
+        }
+        pedidos {
+          int id PK
+          varchar nombre_cliente
+          varchar telefono
+          text productos
+          decimal total
+          datetime fecha
+          varchar correo
+          text direccion
+          text comentarios
+        }
+        cliente ||--o{ pedidos : "realiza pedidos"
+    </div>
+</body>
+</html> 

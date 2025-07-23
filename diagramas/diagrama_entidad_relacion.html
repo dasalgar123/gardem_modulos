@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagrama Entidad-Relación (ER) - Mermaid</title>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+      body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 2rem; }
+      .mermaid { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2rem; }
+      h1 { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Diagrama Entidad-Relación (ER)</h1>
+    <div class="mermaid">
+      erDiagram
+        productos {
+          int id PK
+          varchar nombre
+          text descripcion
+          decimal precio
+          varchar imagen
+          int categoria_id FK
+          int tallas_id FK
+          enum tipo_producto
+          int color_id FK
+        }
+        categorias {
+          int id PK
+          varchar nombre
+        }
+        colores {
+          int id PK
+          varchar nombre
+        }
+        tallas {
+          int id PK
+          varchar nombre
+          varchar categoria
+        }
+        cliente {
+          int id PK
+          varchar nombre
+          varchar correo
+          varchar contrasena
+          varchar rol
+        }
+        proveedor {
+          int id PK
+          varchar nombre
+          varchar telefono
+          varchar correo
+          varchar direccion
+          datetime fecha_creacion
+        }
+        bodega {
+          int id PK
+          varchar nombre
+          varchar ubicacion
+          datetime fecha_creacion
+        }
+        inventario {
+          int producto_id PK, FK
+          int stock_actual
+        }
+        inventario_bodega {
+          int id PK
+          int producto_id FK
+          int bodega_id FK
+          int stock_actual
+        }
+        productos_entradas {
+          int id PK
+          int producto_id FK
+          int bodega_id FK
+          int cantidad
+          datetime fecha
+          enum motivo
+          enum beneficiario_tipo
+          int beneficiario_id
+          varchar factura_remision
+          varchar beneficiario
+        }
+        productos_salidas {
+          int id PK
+          int producto_id FK
+          int venta_id FK
+          enum destinatario_tipo
+          int destinatario_id
+          int cantidad
+          datetime fecha
+          enum motivo
+          int cliente_id FK
+          varchar factura_remision
+        }
+        productos_garantia {
+          int id PK
+          int producto_id FK
+          int cantidad
+          datetime fecha
+          text motivo
+          enum beneficiario_tipo
+          int beneficiario_id
+          varchar factura_remision
+          text observaciones
+        }
+        productos_devoluciones {
+          int id PK
+          enum tipo
+          int entidad_id
+          datetime fecha
+          text motivo
+          varchar factura_remision
+          int producto_id FK
+          int cantidad
+        }
+        productos_ventas {
+          int id PK
+          int cliente_id FK
+          datetime fecha
+          varchar factura
+          int cantidad
+        }
+        compras {
+          int id PK
+          int proveedor_id FK
+          datetime fecha
+          varchar factura
+        }
+        detalle_compras {
+          int id PK
+          int compra_id FK
+          int producto_id FK
+          int cantidad
+          decimal precio_unitario
+        }
+        detalle_pedidos {
+          int id PK
+          int pedido_id FK
+          varchar nombre_producto
+          varchar color
+          varchar talla
+          int cantidad
+          decimal precio_unitario
+          decimal precio_total
+        }
+        pedidos {
+          int id PK
+          varchar nombre_cliente
+          varchar telefono
+          text productos
+          decimal total
+          datetime fecha
+          varchar correo
+          text direccion
+          text comentarios
+        }
+        usuario {
+          int id PK
+          varchar nombre
+          varchar correo
+          varchar contrasena
+          enum rol
+        }
+        productos ||--o{ categorias : categoria_id
+        productos ||--o{ tallas : tallas_id
+        productos ||--o{ colores : color_id
+        inventario ||--|| productos : producto_id
+        inventario_bodega ||--|| productos : producto_id
+        inventario_bodega ||--|| bodega : bodega_id
+        productos_entradas ||--|| productos : producto_id
+        productos_entradas ||--|| bodega : bodega_id
+        productos_salidas ||--|| productos : producto_id
+        productos_salidas ||--|| productos_ventas : venta_id
+        productos_salidas ||--|| cliente : cliente_id
+        productos_garantia ||--|| productos : producto_id
+        productos_devoluciones ||--|| productos : producto_id
+        productos_ventas ||--|| cliente : cliente_id
+        compras ||--|| proveedor : proveedor_id
+        detalle_compras ||--|| compras : compra_id
+        detalle_compras ||--|| productos : producto_id
+        detalle_pedidos ||--|| pedidos : pedido_id
+    </div>
+</body>
+</html> 

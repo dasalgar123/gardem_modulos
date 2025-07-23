@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat de Pedidos - Interfaz Visual</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .chat-header {
+            background: #25d366;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .chat-messages {
+            height: 500px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .message.bot {
+            justify-content: flex-start;
+        }
+        .message.user {
+            justify-content: flex-end;
+        }
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+        }
+        .bot .message-content {
+            background: #f1f0f0;
+            color: #333;
+        }
+        .user .message-content {
+            background: #dcf8c6;
+            color: #333;
+        }
+        .product-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 12px;
+        }
+        .product-info {
+            margin-bottom: 10px;
+        }
+        .product-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .product-price {
+            color: #25d366;
+            font-weight: bold;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin: 10px 0;
+        }
+        .option-btn {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+        }
+        .option-btn:hover {
+            background: #f0f0f0;
+        }
+        .option-btn.selected {
+            background: #25d366;
+            color: white;
+            border-color: #25d366;
+        }
+        .quantity-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .quantity-display {
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+        .confirm-btn {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .order-summary {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .total {
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            🛍️ Catálogo de Productos
+        </div>
+        <div class="chat-messages">
+            <!-- Mensaje de bienvenida -->
+            <div class="message bot">
+                <div class="message-content">
+                    ¡Hola! 👋 Bienvenido a nuestro catálogo. ¿Qué categoría te interesa?
+                    <div class="options-grid">
+                        <div class="option-btn">👕 Ropa</div>
+                        <div class="option-btn">👟 Zapatos</div>
+                        <div class="option-btn">👜 Accesorios</div>
+                        <div class="option-btn">📱 Electrónicos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selección de categoría -->
+            <div class="message user">
+                <div class="message-content">
+                    👕 Ropa
+                </div>
+            </div>
+
+            <!-- Productos de ropa -->
+            <div class="message bot">
+                <div class="message-content">
+                    Perfecto, aquí tienes nuestra colección de ropa:
+                    <div class="product-card">
+                        <div class="product-image">👕</div>
+                        <div class="product-info">
+                            <div class="product-title">Camiseta Básica</div>
+                            <div class="product-price">$25.00</div>
+                        </div>
+                        <div class="options-grid">
+                            <div class="option-btn">S</div>
+                            <div class="option-btn">M</div>
+                            <div class="option-btn">L</div>
+                            <div class="option-btn">XL</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selección de talla -->
+            <div class="message user">
+                <div class="message-content">
+                    M
+                </div>
+            </div>
+
+            <!-- Selección de color -->
+            <div class="message bot">
+                <div class="message-content">
+                    Excelente elección. ¿Qué color prefieres?
+                    <div class="options-grid">
+                        <div class="option-btn">⚪ Blanco</div>
+                        <div class="option-btn">⚫ Negro</div>
+                        <div class="option-btn">🔴 Rojo</div>
+                        <div class="option-btn">🔵 Azul</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selección de color -->
+            <div class="message user">
+                <div class="message-content">
+                    ⚪ Blanco
+                </div>
+            </div>
+
+            <!-- Cantidad -->
+            <div class="message bot">
+                <div class="message-content">
+                    ¿Cuántas unidades quieres?
+                    <div class="quantity-input">
+                        <button class="quantity-btn">-</button>
+                        <div class="quantity-display">1</div>
+                        <button class="quantity-btn">+</button>
+                    </div>
+                    <button class="confirm-btn">✅ Confirmar Producto</button>
+                </div>
+            </div>
+
+            <!-- Confirmación -->
+            <div class="message user">
+                <div class="message-content">
+                    ✅ Confirmar Producto
+                </div>
+            </div>
+
+            <!-- Producto agregado -->
+            <div class="message bot">
+                <div class="message-content">
+                    ✅ Producto agregado al carrito
+                    <br><br>
+                    ¿Quieres agregar más productos o ver tu pedido?
+                    <div class="options-grid">
+                        <div class="option-btn">🛒 Agregar más</div>
+                        <div class="option-btn">📋 Ver pedido</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ver pedido -->
+            <div class="message user">
+                <div class="message-content">
+                    📋 Ver pedido
+                </div>
+            </div>
+
+            <!-- Resumen del pedido -->
+            <div class="message bot">
+                <div class="message-content">
+                    Aquí está tu pedido:
+                    <div class="order-summary">
+                        <div class="order-item">
+                            <span>Camiseta Básica (M, Blanco) x1</span>
+                            <span>$25.00</span>
+                        </div>
+                        <div class="order-item total">
+                            <span>Total:</span>
+                            <span>$25.00</span>
+                        </div>
+                    </div>
+                    <br>
+                    ¿Confirmas el envío por WhatsApp?
+                    <div class="options-grid">
+                        <div class="option-btn">✅ Confirmar</div>
+                        <div class="option-btn">✏️ Editar</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirmar envío -->
+            <div class="message user">
+                <div class="message-content">
+                    ✅ Confirmar
+                </div>
+            </div>
+
+            <!-- Envío por WhatsApp -->
+            <div class="message bot">
+                <div class="message-content">
+                    📱 Enviando pedido por WhatsApp...
+                    <br><br>
+                    ✅ ¡Pedido enviado exitosamente!
+                    <br>
+                    Te contactaremos pronto para coordinar la entrega.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

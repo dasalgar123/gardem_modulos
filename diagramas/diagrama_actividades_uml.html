@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagrama de Actividades UML - Sistema de Administración</title>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ 
+        startOnLoad: true,
+        theme: 'default',
+        flowchart: {
+          useMaxWidth: true,
+          htmlLabels: true
+        }
+      });
+    </script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0; 
+            padding: 2rem; 
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        h1 { 
+            margin: 0; 
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        .subtitle {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        .content {
+            padding: 3rem;
+        }
+        .mermaid { 
+            background: #f8fafc; 
+            border-radius: 10px; 
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid #e2e8f0;
+        }
+        .legend {
+            background: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border-left: 4px solid #2563eb;
+        }
+        .legend h3 {
+            margin: 0 0 1rem 0;
+            color: #1e293b;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Diagrama de Actividades UML</h1>
+            <p class="subtitle">Sistema de Administración PHP - Flujo de Autenticación y Navegación</p>
+        </div>
+        
+        <div class="content">
+            <div class="legend">
+                <h3>📋 Leyenda del Diagrama</h3>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #10b981;"></div>
+                    <span><strong>Actividad de Inicio:</strong> Punto de entrada del sistema</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3b82f6;"></div>
+                    <span><strong>Actividad de Proceso:</strong> Acciones del sistema</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f59e0b;"></div>
+                    <span><strong>Decisión:</strong> Puntos de bifurcación lógica</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ef4444;"></div>
+                    <span><strong>Actividad de Fin:</strong> Puntos de salida</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #8b5cf6;"></div>
+                    <span><strong>Fork/Join:</strong> Paralelización de actividades</span>
+                </div>
+            </div>
+
+            <div class="mermaid">
+graph TD
+    %% Actividades de Inicio
+    A([Inicio del Sistema]) --> B[Usuario accede a index.php]
+    B --> C{¿Usuario está autenticado?}
+    
+    %% Rama de No Autenticado
+    C -->|No| D[Redirigir a LoginController.php]
+    D --> E[Mostrar formulario de login]
+    E --> F[Usuario ingresa credenciales]
+    F --> G{¿Credenciales válidas?}
+    G -->|No| H[Mostrar mensaje de error]
+    H --> E
+    
+    %% Rama de Autenticado
+    C -->|Sí| I[Redirigir a DashboardController.php]
+    G -->|Sí| I
+    
+    %% Dashboard Principal
+    I --> J[Inicializar sesión de usuario]
+    J --> K[Cargar datos del usuario]
+    K --> L[Mostrar dashboard principal]
+    
+    %% Navegación del Dashboard
+    L --> M{¿Usuario navega?}
+    M -->|Sí| N[Procesar navegación]
+    N --> O[Cargar contenido de la página]
+    O --> L
+    
+    %% Logout
+    M -->|No| P{¿Usuario hace logout?}
+    P -->|Sí| Q[Ejecutar LogoutController.php]
+    Q --> R[Destruir sesión]
+    R --> S[Limpiar datos de usuario]
+    S --> D
+    
+    %% Continuar en Dashboard
+    P -->|No| L
+    
+    %% Actividades de Fin
+    T([Usuario cierra navegador]) --> U[Finalizar sesión automáticamente]
+    U --> V([Fin del Sistema])
+    
+    %% Estilos
+    classDef startEnd fill:#10b981,stroke:#047857,stroke-width:3px,color:#fff
+    classDef process fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff
+    classDef decision fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+    classDef error fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+    classDef parallel fill:#8b5cf6,stroke:#7c3aed,stroke-width:2px,color:#fff
+    
+    class A,V startEnd
+    class B,D,E,F,I,J,K,L,N,O,Q,R,S,U process
+    class C,G,M,P decision
+    class H error
+    class T parallel
+</div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flujo Cliente - Pedido - Productos (Mermaid)</title>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+      body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 2rem; }
+      .mermaid { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2rem; }
+      h1 { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Flujo: Cliente hace un Pedido</h1>
+    <div class="mermaid">
+      erDiagram
+        cliente {
+          int id PK
+          varchar nombre
+          varchar correo
+        }
+        pedidos {
+          int id PK
+          varchar nombre_cliente
+          varchar telefono
+          varchar correo
+        }
+        detalle_pedidos {
+          int id PK
+          int pedido_id FK
+          varchar nombre_producto
+          int cantidad
+        }
+        productos {
+          int id PK
+          varchar nombre
+        }
+        cliente ||--o{ pedidos : "realiza"
+        pedidos ||--o{ detalle_pedidos : "tiene"
+        detalle_pedidos }o--|| productos : "incluye"
+    </div>
+</body>
+</html> 

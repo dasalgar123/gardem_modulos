@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_Pedidos" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_1" name="Inicio Catálogo">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    
+    <bpmn:userTask id="Task_SeleccionarCategoria" name="Seleccionar Categoría">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_SeleccionarProducto" name="Seleccionar Producto">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_SeleccionarTalla" name="Seleccionar Talla">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_SeleccionarColor" name="Seleccionar Color">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_IngresarCantidad" name="Ingresar Cantidad">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:exclusiveGateway id="Gateway_ConfirmarProducto" name="¿Confirmar producto?">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:userTask id="Task_AgregarAlPedido" name="Agregar al Pedido">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:exclusiveGateway id="Gateway_AgregarMas" name="¿Agregar más productos?">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+      <bpmn:outgoing>Flow_11</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:userTask id="Task_VerListaPedidos" name="Ver Lista de Pedidos">
+      <bpmn:incoming>Flow_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:exclusiveGateway id="Gateway_ConfirmarEnvio" name="¿Confirmar envío?">
+      <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+      <bpmn:outgoing>Flow_14</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    
+    <bpmn:userTask id="Task_EnviarWhatsApp" name="Enviar por WhatsApp">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:endEvent id="EndEvent_1" name="Pedido Enviado">
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <!-- Flujos -->
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_SeleccionarCategoria" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_SeleccionarCategoria" targetRef="Task_SeleccionarProducto" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_SeleccionarProducto" targetRef="Task_SeleccionarTalla" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_SeleccionarTalla" targetRef="Task_SeleccionarColor" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Task_SeleccionarColor" targetRef="Task_IngresarCantidad" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_IngresarCantidad" targetRef="Gateway_ConfirmarProducto" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Gateway_ConfirmarProducto" targetRef="Task_AgregarAlPedido" name="SÍ" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Gateway_ConfirmarProducto" targetRef="Task_SeleccionarProducto" name="NO" />
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Task_AgregarAlPedido" targetRef="Gateway_AgregarMas" />
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Gateway_AgregarMas" targetRef="Task_SeleccionarCategoria" name="SÍ" />
+    <bpmn:sequenceFlow id="Flow_11" sourceRef="Gateway_AgregarMas" targetRef="Task_VerListaPedidos" name="NO" />
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_VerListaPedidos" targetRef="Gateway_ConfirmarEnvio" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="Gateway_ConfirmarEnvio" targetRef="Task_EnviarWhatsApp" name="SÍ" />
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="Gateway_ConfirmarEnvio" targetRef="Task_VerListaPedidos" name="NO" />
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="Task_EnviarWhatsApp" targetRef="EndEvent_1" />
+  </bpmn:process>
+</bpmn:definitions> 

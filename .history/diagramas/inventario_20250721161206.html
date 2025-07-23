@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sincronización Inventario - Vendedor y Almacenista</title>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+      body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 2rem; }
+      .mermaid { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2rem; }
+      h1 { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Sincronización Inventario: Vendedor y Almacenista</h1>
+    <div class="mermaid">
+      flowchart LR
+        subgraph Vendedor
+          V1[Registrar venta]
+          V2[Pendiente de entrega]
+        end
+
+        subgraph Almacenista
+          A1[Entregar producto]
+          A2[Actualizar inventario]
+        end
+
+        V1 -- Marca como pendiente --> DB[(Inventario en línea)]
+        V2 -- Consulta estado --> DB
+        A1 -- Entrega y descuenta stock --> DB
+        A2 -- Actualiza stock --> DB
+    </div>
+</body>
+</html> 

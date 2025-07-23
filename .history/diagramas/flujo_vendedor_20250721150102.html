@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flujo Vendedor</title>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+      body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 2rem; }
+      .mermaid { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2rem; margin-bottom: 2rem; }
+      h1 { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Flujo Vendedor</h1>
+    <div class="mermaid">
+      flowchart TD
+
+        
+        login --> menu_vendedor
+        menu_vendedor --> ver_pedidos
+        menu_vendedor --> ver_productos
+        menu_vendedor --> ver_inventario
+        menu_vendedor --> ver_clientes
+        menu_vendedor --> registrar_venta
+
+
+
+        registrar_venta --> agregar_cliente
+        registrar_venta --> nuevo_producto
+        registrar_venta --> agregar_fecha
+        registrar_venta --> generar_id_venta
+
+
+        ver_pedidos --> ver_productos
+        ver_productos --> ver_inventario
+        ver_inventario --> registrar_venta
+        registrar_venta --> menu_vendedor
+
+        ver_productos -->   ver_inventario
+        agregar_producto--> agregar_producto
+
+       
+
+    </div>
+</body>
+</html> 

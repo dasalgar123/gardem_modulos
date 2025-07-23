@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama del Sistema de Vendedor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .diagram {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .layer {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #2196F3;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .layer:hover {
+            transform: translateY(-5px);
+        }
+        
+        .layer h3 {
+            color: #2196F3;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .layer h3::before {
+            content: '';
+            width: 30px;
+            height: 30px;
+            background: #2196F3;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .layer:nth-child(1) h3::before { content: '1'; }
+        .layer:nth-child(2) h3::before { content: '2'; }
+        .layer:nth-child(3) h3::before { content: '3'; }
+        .layer:nth-child(4) h3::before { content: '4'; }
+        
+        .file-list {
+            list-style: none;
+        }
+        
+        .file-list li {
+            background: white;
+            margin: 10px 0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 3px solid #4CAF50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .file-list li:hover {
+            background: #e8f5e8;
+            transform: translateX(5px);
+        }
+        
+        .file-list li::before {
+            content: '📄';
+            margin-right: 10px;
+        }
+        
+        .flow-arrows {
+            text-align: center;
+            font-size: 2em;
+            color: #2196F3;
+            margin: 20px 0;
+        }
+        
+        .database-section {
+            background: linear-gradient(45deg, #FF9800, #FF5722);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .database-section h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+        
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .table-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .table-item::before {
+            content: '🗄️';
+            font-size: 1.5em;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .diagram {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Sistema de Vendedor</h1>
+            <p>Arquitectura y Estructura del Proyecto</p>
+        </div>
+        
+        <div class="diagram">
+            <div class="layer">
+                <h3>Vista (Frontend)</h3>
+                <ul class="file-list">
+                    <li>index.php - Página principal</li>
+                    <li>login.php - Autenticación</li>
+                    <li>menu_principal.php - Dashboard</li>
+                    <li>ventas.php - Gestión de ventas</li>
+                    <li>productos.php - Catálogo</li>
+                    <li>clientes.php - Gestión clientes</li>
+                    <li>inventario.php - Control stock</li>
+                    <li>pedidos.php - Pedidos</li>
+                </ul>
+            </div>
+            
+            <div class="layer">
+                <h3>Controlador (Lógica)</h3>
+                <ul class="file-list">
+                    <li>ControladorIndex.php - Navegación</li>
+                    <li>ControladorAuth.php - Autenticación</li>
+                    <li>ControladorVentas.php - Ventas</li>
+                    <li>ControladorProductos.php - Productos</li>
+                    <li>ControladorPedidos.php - Pedidos</li>
+                    <li>ControladorMenuPrincipal.php - Dashboard</li>
+                </ul>
+            </div>
+            
+            <div class="layer">
+                <h3>Modelo (Datos)</h3>
+                <ul class="file-list">
+                    <li>ModeloUsuario.php - Usuarios</li>
+                    <li>ModeloProducto.php - Productos</li>
+                    <li>ModeloCliente.php - Clientes</li>
+                    <li>ModeloVenta.php - Ventas</li>
+                    <li>ModeloPedido.php - Pedidos</li>
+                </ul>
+            </div>
+            
+            <div class="layer">
+                <h3>Configuración</h3>
+                <ul class="file-list">
+                    <li>database.php - Conexión BD</li>
+                    <li>app.php - Configuración</li>
+                    <li>style.css - Estilos</li>
+                    <li>app.js - JavaScript</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="database-section">
+            <h3>🗄️ Base de Datos: gardelcatalogo</h3>
+            <div class="tables-grid">
+                <div class="table-item">usuario</div>
+                <div class="table-item">productos</div>
+                <div class="table-item">cliente</div>
+                <div class="table-item">productos_ventas</div>
+                <div class="table-item">inventario_bodega</div>
+                <div class="table-item">colores</div>
+                <div class="table-item">tallas</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flujo Sistema Completo</title>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+      body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 2rem; }
+      .mermaid { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 2rem; }
+      h1 { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Flujo Sistema Completo</h1>
+    <div class="mermaid">
+      flowchart LR
+        antes_login --> login
+        login --> menu_principal
+        menu_principal --> ventas
+        menu_principal --> pedidos
+    </div>
+</body>
+</html> 
