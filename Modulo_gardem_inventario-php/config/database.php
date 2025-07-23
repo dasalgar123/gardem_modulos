@@ -106,34 +106,17 @@ function verificarBaseDatos() {
 
 // Función para obtener estadísticas básicas
 function obtenerEstadisticas() {
-    global $pdo;
-    
-    try {
-        $stats = [];
-        
-        // Contar productos
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM productos");
-        $stats['productos'] = $stmt->fetch()['total'];
-        
-        // Contar categorías
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM categorias");
-        $stats['categorias'] = $stmt->fetch()['total'];
-        
-        // Contar entradas hoy
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM entradas WHERE DATE(fecha) = CURDATE()");
-        $stats['entradas_hoy'] = $stmt->fetch()['total'];
-        
-        // Contar salidas hoy
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM salidas WHERE DATE(fecha) = CURDATE()");
-        $stats['salidas_hoy'] = $stmt->fetch()['total'];
-        
-        return $stats;
-        
-    } catch (Exception $e) {
-        return [
-            'error' => $e->getMessage()
-        ];
-    }
+    // Valores quemados (hardcodeados) para mostrar en el dashboard
+    return [
+        'productos' => 156,
+        'categorias' => 8,
+        'proveedores' => 12,
+        'entradas_hoy' => 5,
+        'salidas_hoy' => 3,
+        'stock_bajo' => 7,
+        'agotados' => 2,
+        'movimientos_mes' => 45
+    ];
 }
 
 // Función para crear usuario administrador
