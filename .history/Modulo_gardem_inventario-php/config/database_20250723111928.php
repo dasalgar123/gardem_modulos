@@ -674,244 +674,44 @@ function obtenerStockPorCategoria() {
     }
 }
 
-// Función para obtener inventario detallado - CORREGIDA PARA MOSTRAR TODOS LOS PRODUCTOS
+// Función para obtener inventario detallado
 function obtenerInventarioDetallado() {
     global $pdo;
     
     try {
-        // Buscar las tablas correctas
-        $stmt = $pdo->query("SHOW TABLES");
-        $tablas = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        
-        $tabla_productos = null;
-        $tabla_categorias = null;
-        $tabla_inventario = null;
-        
-        // Buscar tabla de productos
-        foreach ($tablas as $tabla) {
-            if (strpos(strtolower($tabla), 'product') !== false) {
-                $tabla_productos = $tabla;
-                break;
-            }
-        }
-        
-        // Buscar tabla de categorías
-        foreach ($tablas as $tabla) {
-            if (strpos(strtolower($tabla), 'categ') !== false) {
-                $tabla_categorias = $tabla;
-                break;
-            }
-        }
-        
-        // Buscar tabla de inventario
-        foreach ($tablas as $tabla) {
-            if (strpos(strtolower($tabla), 'inventario') !== false || strpos(strtolower($tabla), 'stock') !== false) {
-                $tabla_inventario = $tabla;
-                break;
-            }
-        }
-        
-        // Si no encuentra, intentar nombres específicos
-        if (!$tabla_productos) {
-            $nombres_productos = ['productos', 'producto', 'products', 'product'];
-            foreach ($nombres_productos as $nombre) {
-                $stmt = $pdo->query("SHOW TABLES LIKE '$nombre'");
-                if ($stmt->rowCount() > 0) {
-                    $tabla_productos = $nombre;
-                    break;
-                }
-            }
-        }
-        
-        if (!$tabla_categorias) {
-            $nombres_categorias = ['categorias', 'categoria', 'categories', 'category'];
-            foreach ($nombres_categorias as $nombre) {
-                $stmt = $pdo->query("SHOW TABLES LIKE '$nombre'");
-                if ($stmt->rowCount() > 0) {
-                    $tabla_categorias = $nombre;
-                    break;
-                }
-            }
-        }
-        
-        if (!$tabla_inventario) {
-            $nombres_inventario = ['inventario', 'stock', 'inventory'];
-            foreach ($nombres_inventario as $nombre) {
-                $stmt = $pdo->query("SHOW TABLES LIKE '$nombre'");
-                if ($stmt->rowCount() > 0) {
-                    $tabla_inventario = $nombre;
-                    break;
-                }
-            }
-        }
-        
-        // Si no encuentra las tablas necesarias, devolver datos de ejemplo
-        if (!$tabla_productos) {
-            return generarDatosInventarioEjemplo();
-        }
-        
-        // Construir la consulta dinámicamente
-        $query = "SELECT p.id, p.nombre";
-        
-        // Agregar categoría si existe la tabla
-        if ($tabla_categorias) {
-            $query .= ", COALESCE(c.nombre, 'Sin Categoría') as categoria";
-        } else {
-            $query .= ", 'Sin Categoría' as categoria";
-        }
-        
-        // Agregar stock si existe la tabla de inventario
-        if ($tabla_inventario) {
-            $query .= ", COALESCE(i.cantidad, 0) as stock";
-        } else {
-            $query .= ", 0 as stock";
-        }
-        
-        $query .= ", COALESCE(p.precio, 0) as precio";
-        
-        if ($tabla_inventario) {
-            $query .= ", COALESCE(i.cantidad * p.precio, 0) as valor_total";
-        } else {
-            $query .= ", 0 as valor_total";
-        }
-        
-        $query .= ", CASE 
-            WHEN COALESCE(i.cantidad, 0) = 0 THEN 'Agotado'
-            WHEN COALESCE(i.cantidad, 0) < 10 THEN 'Stock Bajo'
-            ELSE 'Disponible'
-        END as estado";
-        
-        $query .= " FROM `$tabla_productos` p";
-        
-        if ($tabla_categorias) {
-            $query .= " LEFT JOIN `$tabla_categorias` c ON p.categoria_id = c.id";
-        }
-        
-        if ($tabla_inventario) {
-            $query .= " LEFT JOIN `$tabla_inventario` i ON p.id = i.producto_id";
-        }
-        
-        $query .= " ORDER BY p.nombre";
-        
-        $stmt = $pdo->query($query);
-        $resultado = $stmt->fetchAll();
-        
-        // Si no hay resultados, devolver datos de ejemplo
-        if (empty($resultado)) {
-            return generarDatosInventarioEjemplo();
-        }
-        
-        return $resultado;
-        
+        $stmt = $pdo->query("
+            SELECT 
+                p.id,
+                p.nombre,
+                c.nombre as categoria,
+                COALESCE(i.cantidad, 0) as stock,
+                p.precio,
+                COALESCE(i.cantidad * p.precio, 0) as valor_total,
+                CASE 
+                    WHEN COALESCE(i.cantidad, 0) = 0 THEN 'Agotado'
+                    WHEN COALESCE(i.cantidad, 0) < 10 THEN 'Stock Bajo'
+                    ELSE 'Disponible'
+                END as estado
+            FROM productos p
+            LEFT JOIN categorias c ON p.categoria_id = c.id
+            LEFT JOIN inventario i ON p.id = i.producto_id
+            ORDER BY p.nombre
+        ");
+        return $stmt->fetchAll();
     } catch (Exception $e) {
         // Si hay error, devolver datos de ejemplo
-        return generarDatosInventarioEjemplo();
+        return [
+            [
+                'id' => 1,
+                'nombre' => 'Boxer Clásico',
+                'categoria' => 'Ropa Interior',
+                'stock' => 0,
+                'precio' => 25000,
+                'valor_total' => 0,
+                'estado' => 'Agotado'
+            ]
+        ];
     }
-}
-
-// Función para generar datos de inventario de ejemplo
-function generarDatosInventarioEjemplo() {
-    return [
-        [
-            'id' => 1,
-            'nombre' => 'Boxer Clásico Negro',
-            'categoria' => 'Ropa Interior',
-            'stock' => 45,
-            'precio' => 25000,
-            'valor_total' => 1125000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 2,
-            'nombre' => 'Boxer Deportivo Azul',
-            'categoria' => 'Ropa Interior',
-            'stock' => 32,
-            'precio' => 35000,
-            'valor_total' => 1120000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 3,
-            'nombre' => 'Boxer Premium Gris',
-            'categoria' => 'Ropa Interior',
-            'stock' => 28,
-            'precio' => 45000,
-            'valor_total' => 1260000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 4,
-            'nombre' => 'Boxer Microfibra Rojo',
-            'categoria' => 'Ropa Interior',
-            'stock' => 15,
-            'precio' => 38000,
-            'valor_total' => 570000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 5,
-            'nombre' => 'Boxer Algodón Blanco',
-            'categoria' => 'Ropa Interior',
-            'stock' => 8,
-            'precio' => 22000,
-            'valor_total' => 176000,
-            'estado' => 'Stock Bajo'
-        ],
-        [
-            'id' => 6,
-            'nombre' => 'Boxer Compresión Verde',
-            'categoria' => 'Ropa Deportiva',
-            'stock' => 22,
-            'precio' => 55000,
-            'valor_total' => 1210000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 7,
-            'nombre' => 'Boxer Sin Costura Negro',
-            'categoria' => 'Ropa Interior',
-            'stock' => 0,
-            'precio' => 42000,
-            'valor_total' => 0,
-            'estado' => 'Agotado'
-        ],
-        [
-            'id' => 8,
-            'nombre' => 'Boxer Calvin Klein Azul',
-            'categoria' => 'Ropa Premium',
-            'stock' => 12,
-            'precio' => 85000,
-            'valor_total' => 1020000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 9,
-            'nombre' => 'Boxer Mezcla Stretch',
-            'categoria' => 'Ropa Interior',
-            'stock' => 18,
-            'precio' => 32000,
-            'valor_total' => 576000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 10,
-            'nombre' => 'Boxer Microfibra Deportivo',
-            'categoria' => 'Ropa Deportiva',
-            'stock' => 5,
-            'precio' => 48000,
-            'valor_total' => 240000,
-            'estado' => 'Stock Bajo'
-        ],
-        [
-            'id' => 11,
-            'nombre' => 'Boxer Compresión Ligera',
-            'categoria' => 'Ropa Deportiva',
-            'stock' => 25,
-            'precio' => 62000,
-            'valor_total' => 1550000,
-            'estado' => 'Disponible'
-        ]
-    ];
 }
 
 // Función para crear usuario administrador

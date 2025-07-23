@@ -35,7 +35,7 @@ $page = $_GET['page'] ?? 'menu_principal';
         <div class="container-fluid">
             <a class="navbar-brand" href="index.php">
                 <i class="fas fa-warehouse me-2"></i>
-                Gardem Modulo Sistema de Almacen 
+                Sistema de Almacenista
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -121,104 +121,37 @@ $page = $_GET['page'] ?? 'menu_principal';
                 </div>
             </div>
             
-            <?php
-            // Obtener estadísticas de la base de datos
-            $stats = obtenerEstadisticas();
-            ?>
-            
             <!-- Tarjetas de estadísticas -->
             <div class="row mb-4">
                 <div class="col-md-3">
                     <div class="card bg-primary text-white">
                         <div class="card-body">
                             <h5><i class="fas fa-box"></i> Productos</h5>
-                            <h3><?php echo $stats['productos']; ?></h3>
-                            <small>Total registrados</small>
+                            <h3>0</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card bg-success text-white">
                         <div class="card-body">
-                            <h5><i class="fas fa-clipboard-list"></i> Categorías</h5>
-                            <h3><?php echo $stats['categorias']; ?></h3>
-                            <small>Tipos de productos</small>
+                            <h5><i class="fas fa-clipboard-list"></i> Inventario</h5>
+                            <h3>0</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card bg-warning text-white">
                         <div class="card-body">
-                            <h5><i class="fas fa-arrow-down"></i> Entradas Hoy</h5>
-                            <h3><?php echo $stats['entradas_hoy']; ?></h3>
-                            <small>Nuevos ingresos</small>
+                            <h5><i class="fas fa-truck"></i> Entregas</h5>
+                            <h3>0</h3>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="card bg-info text-white">
                         <div class="card-body">
-                            <h5><i class="fas fa-arrow-up"></i> Salidas Hoy</h5>
-                            <h3><?php echo $stats['salidas_hoy']; ?></h3>
-                            <small>Ventas realizadas</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Tarjetas de estadísticas -->
-            <div class="row mb-4">
-                <div class="col-md-2">
-                    <div class="card bg-danger text-white">
-                        <div class="card-body">
-                            <h5><i class="fas fa-exclamation-triangle"></i> Agotados</h5>
-                            <h3><?php echo $stats['agotados']; ?></h3>
-                            <small>Sin stock</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-warning text-white">
-                        <div class="card-body">
-                            <h5><i class="fas fa-exclamation-circle"></i> Stock Bajo</h5>
-                            <h3><?php echo $stats['stock_bajo']; ?></h3>
-                            <small>< 10 unidades</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-secondary text-white">
-                        <div class="card-body">
-                            <h5><i class="fas fa-truck"></i> Proveedores</h5>
-                            <h3><?php echo obtenerProveedoresActivos(); ?></h3>
-                            <small>Activos</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <h5><i class="fas fa-arrow-down"></i> Entradas</h5>
-                            <h3><?php echo obtenerEntradasDelMes(); ?></h3>
-                            <small>Este mes</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-danger text-white">
-                        <div class="card-body">
-                            <h5><i class="fas fa-arrow-up"></i> Salidas</h5>
-                            <h3><?php echo obtenerSalidasDelMes(); ?></h3>
-                            <small>Este mes</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-dark text-white">
-                        <div class="card-body">
-                            <h5><i class="fas fa-chart-line"></i> Total</h5>
-                            <h3><?php echo $stats['movimientos_mes']; ?></h3>
-                            <small>Movimientos</small>
+                            <h5><i class="fas fa-chart-bar"></i> Reportes</h5>
+                            <h3>0</h3>
                         </div>
                     </div>
                 </div>
@@ -268,37 +201,6 @@ $page = $_GET['page'] ?? 'menu_principal';
                     </div>
                 </div>
             </div>
-            
-            <!-- Información del sistema -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5><i class="fas fa-info-circle"></i> Información del Sistema</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6><i class="fas fa-user"></i> Usuario Actual</h6>
-                                    <p class="mb-2">
-                                        <strong>Nombre:</strong> <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?><br>
-                                        <strong>Rol:</strong> <?php echo ucfirst($_SESSION['usuario_rol']); ?>
-                                    </p>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6><i class="fas fa-calendar"></i> Información del Sistema</h6>
-                                    <p class="mb-2">
-                                        <strong>Fecha:</strong> <?php echo date('d/m/Y'); ?><br>
-                                        <strong>Hora:</strong> <?php echo date('H:i:s'); ?><br>
-                                        <strong>Movimientos del Mes:</strong> <?php echo $stats['movimientos_mes']; ?><br>
-                                        <strong>Estado:</strong> <span class="badge bg-success">Activo</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         <?php elseif ($page == 'productos'): ?>
             <?php include 'vista/productos.php'; ?>
         <?php elseif ($page == 'proveedores'): ?>
@@ -309,8 +211,6 @@ $page = $_GET['page'] ?? 'menu_principal';
             <?php include 'vista/inventario.php'; ?>
         <?php elseif ($page == 'entradas'): ?>
             <?php include 'vista/entradas.php'; ?>
-        <?php elseif ($page == 'reportes'): ?>
-            <?php include 'vista/reportes.php'; ?>
         <?php elseif ($page == 'logout'): ?>
             <?php include 'vista/logout.php'; ?>
         <?php else: ?>

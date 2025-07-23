@@ -1,0 +1,347 @@
+<?php
+// Verificar si el usuario está logueado
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: index.php?page=login');
+    exit();
+}
+
+// Incluir el controlador
+require_once __DIR__ . '/../controlador/ControladorProveedores.php';
+
+// Crear instancia del controlador
+$controladorProveedores = new ControladorProveedores($pdo);
+
+// Obtener datos
+$proveedores = $controladorProveedores->obtenerProveedores();
+?>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center pt-3 mb-3">
+        <h1 class="h2"><i class="fas fa-truck text-primary me-2"></i>Gestión de Proveedores</h1>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoProveedorModal">
+            <i class="fas fa-plus me-2"></i>Nuevo Proveedor
+        </button>
+    </div>
+
+    <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+        <div class="alert alert-success">
+            <strong>¡Éxito!</strong> El proveedor ha sido registrado correctamente.
+        </div>
+    <?php endif; ?>
+    
+    <?php if (isset($_GET['error'])): ?>
+        <div class="alert alert-danger">
+            <strong>Error:</strong> <?php echo htmlspecialchars($_GET['error']); ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- Tarjetas de estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-truck fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="card-title mb-0">Total Proveedores</h6>
+                            <h4 class="mb-0"><?php echo count($proveedores); ?></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="card-title mb-0">Con Teléfono</h6>
+                            <h4 class="mb-0"><?php echo count(array_filter($proveedores, function($p) { return !empty($p['telefono']); })); ?></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-envelope fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="card-title mb-0">Con Email</h6>
+                            <h4 class="mb-0"><?php echo count(array_filter($proveedores, function($p) { return !empty($p['correo']); })); ?></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-map-marker-alt fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="card-title mb-0">Con Dirección</h6>
+                            <h4 class="mb-0"><?php echo count(array_filter($proveedores, function($p) { return !empty($p['direccion']); })); ?></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de proveedores -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-list me-2"></i>Lista de Proveedores</h5>
+        </div>
+        <div class="card-body">
+            <?php if (empty($proveedores)): ?>
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-truck fa-3x mb-3"></i>
+                    <h5>No se encontraron proveedores</h5>
+                    <p>La tabla proveedores está vacía o no existe.</p>
+                </div>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Correo</th>
+                                <th>Dirección</th>
+                                <th>Fecha Creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($proveedores as $proveedor): ?>
+                            <tr>
+                                <td><?php echo $proveedor['id']; ?></td>
+                                <td>
+                                    <div class="fw-bold"><?php echo htmlspecialchars($proveedor['nombre']); ?></div>
+                                </td>
+                                <td>
+                                    <?php if (!empty($proveedor['telefono'])): ?>
+                                        <a href="tel:<?php echo $proveedor['telefono']; ?>" class="text-decoration-none">
+                                            <i class="fas fa-phone me-1"></i><?php echo htmlspecialchars($proveedor['telefono']); ?>
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted">N/A</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if (!empty($proveedor['correo'])): ?>
+                                        <a href="mailto:<?php echo $proveedor['correo']; ?>" class="text-decoration-none">
+                                            <i class="fas fa-envelope me-1"></i><?php echo htmlspecialchars($proveedor['correo']); ?>
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted">N/A</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if (!empty($proveedor['direccion'])): ?>
+                                        <i class="fas fa-map-marker-alt me-1"></i><?php echo htmlspecialchars($proveedor['direccion']); ?>
+                                    <?php else: ?>
+                                        <span class="text-muted">N/A</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <small class="text-muted"><?php echo date('d/m/Y H:i', strtotime($proveedor['fecha_creacion'])); ?></small>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                onclick="editarProveedor(<?php echo $proveedor['id']; ?>)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                onclick="eliminarProveedor(<?php echo $proveedor['id']; ?>)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nuevo Proveedor -->
+<div class="modal fade" id="nuevoProveedorModal" tabindex="-1" aria-labelledby="nuevoProveedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="nuevoProveedorModalLabel">
+                    <i class="fas fa-plus me-2"></i>Nuevo Proveedor
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formNuevoProveedor" method="POST" action="procesar_proveedor.php">
+                <input type="hidden" name="accion" value="crear">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">Nombre del Proveedor *</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="telefono" name="telefono">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="correo" class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control" id="correo" name="correo">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="direccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="direccion" name="direccion">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Guardar Proveedor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Proveedor -->
+<div class="modal fade" id="editarProveedorModal" tabindex="-1" aria-labelledby="editarProveedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title" id="editarProveedorModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Proveedor
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formEditarProveedor" method="POST" action="procesar_proveedor.php">
+                <input type="hidden" name="accion" value="actualizar">
+                <input type="hidden" name="id" id="edit_id">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_nombre" class="form-label">Nombre del Proveedor *</label>
+                                <input type="text" class="form-control" id="edit_nombre" name="nombre" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_telefono" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="edit_telefono" name="telefono">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_correo" class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control" id="edit_correo" name="correo">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_direccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="edit_direccion" name="direccion">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save me-2"></i>Actualizar Proveedor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Función para editar proveedor
+function editarProveedor(id) {
+    // Obtener datos del proveedor mediante AJAX
+    fetch(`obtener_proveedor.php?id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const proveedor = data.proveedor;
+                document.getElementById('edit_id').value = proveedor.id;
+                document.getElementById('edit_nombre').value = proveedor.nombre;
+                document.getElementById('edit_telefono').value = proveedor.telefono;
+                document.getElementById('edit_correo').value = proveedor.correo;
+                document.getElementById('edit_direccion').value = proveedor.direccion;
+                
+                // Mostrar modal
+                new bootstrap.Modal(document.getElementById('editarProveedorModal')).show();
+            } else {
+                alert('Error al cargar datos del proveedor');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al cargar datos del proveedor');
+        });
+}
+
+// Función para eliminar proveedor
+function eliminarProveedor(id) {
+    if (confirm('¿Estás seguro de que quieres eliminar este proveedor?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'procesar_proveedor.php';
+        
+        const accionInput = document.createElement('input');
+        accionInput.type = 'hidden';
+        accionInput.name = 'accion';
+        accionInput.value = 'eliminar';
+        
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'id';
+        idInput.value = id;
+        
+        form.appendChild(accionInput);
+        form.appendChild(idInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script> 

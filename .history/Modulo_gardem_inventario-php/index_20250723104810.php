@@ -166,59 +166,21 @@ $page = $_GET['page'] ?? 'menu_principal';
                 </div>
             </div>
             
-            <!-- Tarjetas de estadísticas -->
+            <!-- Tarjetas de alertas -->
             <div class="row mb-4">
-                <div class="col-md-2">
+                <div class="col-md-6">
                     <div class="card bg-danger text-white">
                         <div class="card-body">
-                            <h5><i class="fas fa-exclamation-triangle"></i> Agotados</h5>
-                            <h3><?php echo $stats['agotados']; ?></h3>
-                            <small>Sin stock</small>
+                            <h5><i class="fas fa-exclamation-triangle"></i> Productos Agotados</h5>
+                            <h3><?php echo isset($stats['agotados']) ? $stats['agotados'] : '0'; ?></h3>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-6">
                     <div class="card bg-warning text-white">
                         <div class="card-body">
                             <h5><i class="fas fa-exclamation-circle"></i> Stock Bajo</h5>
-                            <h3><?php echo $stats['stock_bajo']; ?></h3>
-                            <small>< 10 unidades</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-secondary text-white">
-                        <div class="card-body">
-                            <h5><i class="fas fa-truck"></i> Proveedores</h5>
-                            <h3><?php echo obtenerProveedoresActivos(); ?></h3>
-                            <small>Activos</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <h5><i class="fas fa-arrow-down"></i> Entradas</h5>
-                            <h3><?php echo obtenerEntradasDelMes(); ?></h3>
-                            <small>Este mes</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-danger text-white">
-                        <div class="card-body">
-                            <h5><i class="fas fa-arrow-up"></i> Salidas</h5>
-                            <h3><?php echo obtenerSalidasDelMes(); ?></h3>
-                            <small>Este mes</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="card bg-dark text-white">
-                        <div class="card-body">
-                            <h5><i class="fas fa-chart-line"></i> Total</h5>
-                            <h3><?php echo $stats['movimientos_mes']; ?></h3>
-                            <small>Movimientos</small>
+                            <h3><?php echo isset($stats['stock_bajo']) ? $stats['stock_bajo'] : '0'; ?></h3>
                         </div>
                     </div>
                 </div>
@@ -290,8 +252,7 @@ $page = $_GET['page'] ?? 'menu_principal';
                                     <p class="mb-2">
                                         <strong>Fecha:</strong> <?php echo date('d/m/Y'); ?><br>
                                         <strong>Hora:</strong> <?php echo date('H:i:s'); ?><br>
-                                        <strong>Movimientos del Mes:</strong> <?php echo $stats['movimientos_mes']; ?><br>
-                                        <strong>Estado:</strong> <span class="badge bg-success">Activo</span>
+                                        <strong>Movimientos del Mes:</strong> <?php echo isset($stats['movimientos_mes']) ? $stats['movimientos_mes'] : '0'; ?>
                                     </p>
                                 </div>
                             </div>
@@ -309,8 +270,6 @@ $page = $_GET['page'] ?? 'menu_principal';
             <?php include 'vista/inventario.php'; ?>
         <?php elseif ($page == 'entradas'): ?>
             <?php include 'vista/entradas.php'; ?>
-        <?php elseif ($page == 'reportes'): ?>
-            <?php include 'vista/reportes.php'; ?>
         <?php elseif ($page == 'logout'): ?>
             <?php include 'vista/logout.php'; ?>
         <?php else: ?>

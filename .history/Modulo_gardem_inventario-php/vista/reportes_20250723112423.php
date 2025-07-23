@@ -8,6 +8,7 @@ $stats = obtenerEstadisticas();
 $productos_mas_vendidos = obtenerProductosMasVendidos(5);
 $movimientos_mensuales = obtenerMovimientosMensuales(6);
 $stock_por_categoria = obtenerStockPorCategoria();
+$inventario_detallado = obtenerInventarioDetallado();
 ?>
 
 <div class="row">
@@ -58,57 +59,39 @@ $stock_por_categoria = obtenerStockPorCategoria();
 
 <!-- Resumen de estadísticas -->
 <div class="row mb-4">
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body">
-                <h5><i class="fas fa-box"></i> Productos</h5>
+                <h5><i class="fas fa-box"></i> En catalogo</h5>
                 <h3><?php echo $stats['productos']; ?></h3>
                 <small>En Catálogo</small>
             </div>
         </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body">
-                <h5><i class="fas fa-arrow-down"></i> Entradas</h5>
+                <h5><i class="fas fa-arrow-down"></i> Entradas Mes</h5>
                 <h3><?php echo obtenerEntradasDelMes(); ?></h3>
                 <small>Este mes</small>
             </div>
         </div>
     </div>
-    <div class="col-md-2">
-        <div class="card bg-danger text-white">
-            <div class="card-body">
-                <h5><i class="fas fa-arrow-up"></i> Salidas</h5>
-                <h3><?php echo obtenerSalidasDelMes(); ?></h3>
-                <small>Este mes</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="card bg-warning text-white">
             <div class="card-body">
                 <h5><i class="fas fa-exclamation-triangle"></i> Alertas</h5>
                 <h3><?php echo $stats['agotados'] + $stats['stock_bajo']; ?></h3>
-                <small>Críticos</small>
+                <small>Productos críticos</small>
             </div>
         </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="card bg-info text-white">
             <div class="card-body">
                 <h5><i class="fas fa-truck"></i> Proveedores</h5>
                 <h3><?php echo obtenerProveedoresActivos(); ?></h3>
                 <small>Activos</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="card bg-dark text-white">
-            <div class="card-body">
-                <h5><i class="fas fa-chart-line"></i> Total</h5>
-                <h3><?php echo $stats['movimientos_mes']; ?></h3>
-                <small>Movimientos</small>
             </div>
         </div>
     </div>
@@ -294,7 +277,59 @@ $stock_por_categoria = obtenerStockPorCategoria();
     </div>
 </div>
 
-
+<!-- Reporte detallado de inventario -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-clipboard-list me-2"></i>Reporte Detallado de Inventario</h5>
+                <button class="btn btn-success btn-sm" onclick="exportarReporte()">
+                    <i class="fas fa-download me-2"></i>Exportar PDF
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Stock</th>
+                                <th>Precio</th>
+                                <th>Valor Total</th>
+                                <th>Estado</th>
+                                <th>Último Movimiento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($inventario_detallado as $producto): ?>
+                            <tr>
+                                <td><?php echo $producto['id']; ?></td>
+                                <td><?php echo htmlspecialchars($producto['nombre']); ?></td>
+                                <td><?php echo htmlspecialchars($producto['categoria']); ?></td>
+                                <td><?php echo $producto['stock']; ?></td>
+                                <td>$<?php echo number_format($producto['precio'], 0, ',', '.'); ?></td>
+                                <td>$<?php echo number_format($producto['valor_total'], 0, ',', '.'); ?></td>
+                                <td>
+                                    <?php if ($producto['estado'] == 'Agotado'): ?>
+                                        <span class="badge bg-danger">Agotado</span>
+                                    <?php elseif ($producto['estado'] == 'Stock Bajo'): ?>
+                                        <span class="badge bg-warning">Stock Bajo</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-success">Disponible</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo date('d/m H:i'); ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -342,120 +377,13 @@ function generarReporte() {
     const desde = document.getElementById('fechaDesde').value;
     const hasta = document.getElementById('fechaHasta').value;
     
-    // Mostrar mensaje de carga
-    const mensaje = `Generando reporte de ${tipo} desde ${desde} hasta ${hasta}`;
-    
-    // Crear un modal de carga
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    `;
-    
-    const contenido = document.createElement('div');
-    contenido.style.cssText = `
-        background: white;
-        padding: 30px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    `;
-    
-    contenido.innerHTML = `
-        <div style="margin-bottom: 20px;">
-            <i class="fas fa-spinner fa-spin" style="font-size: 2em; color: #007bff;"></i>
-        </div>
-        <h4>Generando Reporte</h4>
-        <p>${mensaje}</p>
-        <div style="margin-top: 20px;">
-            <button onclick="this.parentElement.parentElement.parentElement.remove()" 
-                    style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-                Cerrar
-            </button>
-        </div>
-    `;
-    
-    modal.appendChild(contenido);
-    document.body.appendChild(modal);
-    
-    // Simular procesamiento y luego generar el reporte real
-    setTimeout(() => {
-        // Generar URL del reporte
-        const url = `generar_reporte.php?tipo=${tipo}&desde=${desde}&hasta=${hasta}`;
-        
-        // Abrir el reporte en una nueva ventana
-        window.open(url, '_blank');
-        
-        // Cerrar el modal
-        modal.remove();
-    }, 2000);
+    alert(`Generando reporte de ${tipo} desde ${desde} hasta ${hasta}`);
+    // Aquí se implementaría la lógica real de generación de reportes
 }
 
 // Función para exportar reporte
 function exportarReporte() {
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    `;
-    
-    const contenido = document.createElement('div');
-    contenido.style.cssText = `
-        background: white;
-        padding: 30px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    `;
-    
-    contenido.innerHTML = `
-        <div style="margin-bottom: 20px;">
-            <i class="fas fa-file-pdf" style="font-size: 2em; color: #dc3545;"></i>
-        </div>
-        <h4>Exportando a PDF</h4>
-        <p>Preparando el reporte para descarga...</p>
-        <div style="margin-top: 20px;">
-            <button onclick="this.parentElement.parentElement.parentElement.remove()" 
-                    style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-                Cerrar
-            </button>
-        </div>
-    `;
-    
-    modal.appendChild(contenido);
-    document.body.appendChild(modal);
-    
-    // Simular exportación
-    setTimeout(() => {
-        alert('Reporte exportado exitosamente (simulado)');
-        modal.remove();
-    }, 3000);
+    alert('Exportando reporte a PDF...');
+    // Aquí se implementaría la lógica de exportación a PDF
 }
-
-// Cargar filtros guardados al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-    const tipo = localStorage.getItem('reporte_tipo');
-    const desde = localStorage.getItem('reporte_desde');
-    const hasta = localStorage.getItem('reporte_hasta');
-    
-    if (tipo) document.getElementById('tipoReporte').value = tipo;
-    if (desde) document.getElementById('fechaDesde').value = desde;
-    if (hasta) document.getElementById('fechaHasta').value = hasta;
-});
 </script> 

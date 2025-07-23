@@ -28,7 +28,7 @@ $stats = obtenerEstadisticas();
                             En Catálogo
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            <?php echo $stats['productos']; ?>
+                            <?php echo $stats['total_productos']; ?>
                         </div>
                     </div>
                     <div class="col-auto">
@@ -48,7 +48,7 @@ $stats = obtenerEstadisticas();
                             Proveedores
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            <?php echo obtenerProveedoresActivos(); ?>
+                            <?php echo $stats['total_proveedores']; ?>
                         </div>
                     </div>
                     <div class="col-auto">

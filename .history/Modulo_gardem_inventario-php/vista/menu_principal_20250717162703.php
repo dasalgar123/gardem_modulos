@@ -1,9 +1,11 @@
 <?php
 // Menú Principal del Sistema de Almacenista
 
-// Obtener estadísticas generales usando las funciones de database.php
-require_once __DIR__ . '/../config/database.php';
-$stats = obtenerEstadisticas();
+require_once __DIR__ . '/../controlador/ControladorIndex.php';
+$controlador = new ControladorIndex($pdo);
+
+// Obtener estadísticas generales
+$stats = $controlador->obtenerEstadisticasGenerales();
 ?>
 
 <div class="row">
@@ -24,11 +26,8 @@ $stats = obtenerEstadisticas();
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Total Productos
                         </div>
-                        <div class="text-xs text-muted">
-                            En Catálogo
-                        </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            <?php echo $stats['productos']; ?>
+                            <?php echo $stats['total_productos']; ?>
                         </div>
                     </div>
                     <div class="col-auto">
@@ -48,7 +47,7 @@ $stats = obtenerEstadisticas();
                             Proveedores
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            <?php echo obtenerProveedoresActivos(); ?>
+                            <?php echo $stats['total_proveedores']; ?>
                         </div>
                     </div>
                     <div class="col-auto">

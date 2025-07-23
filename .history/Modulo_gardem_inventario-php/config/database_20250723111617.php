@@ -345,136 +345,10 @@ function obtenerEstadisticas() {
         }
     }
     
-    // 7. CALCULAR MOVIMIENTOS DEL MES - CORREGIDO
-    $stats['movimientos_mes'] = obtenerEntradasDelMes() + obtenerSalidasDelMes();
+    // 7. CALCULAR MOVIMIENTOS DEL MES
+    $stats['movimientos_mes'] = $stats['entradas_hoy'] + $stats['salidas_hoy'];
     
     return $stats;
-}
-
-// Función específica para obtener entradas del mes actual
-function obtenerEntradasDelMes() {
-    global $pdo;
-    
-    try {
-        // Buscar tabla de entradas
-        $stmt = $pdo->query("SHOW TABLES");
-        $tablas = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        
-        $tabla_entradas = null;
-        
-        // Buscar tabla que contenga 'entrada'
-        foreach ($tablas as $tabla) {
-            if (strpos(strtolower($tabla), 'entrada') !== false) {
-                $tabla_entradas = $tabla;
-                break;
-            }
-        }
-        
-        // Si no encuentra, intentar nombres específicos
-        if (!$tabla_entradas) {
-            $nombres_entradas = ['entradas', 'entrada', 'compras', 'ingresos'];
-            foreach ($nombres_entradas as $nombre) {
-                $stmt = $pdo->query("SHOW TABLES LIKE '$nombre'");
-                if ($stmt->rowCount() > 0) {
-                    $tabla_entradas = $nombre;
-                    break;
-                }
-            }
-        }
-        
-        if ($tabla_entradas) {
-            // Buscar columna de fecha
-            $stmt = $pdo->query("DESCRIBE `$tabla_entradas`");
-            $columnas = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            
-            $columna_fecha = null;
-            $fecha_columns = ['fecha', 'fecha_entrada', 'fecha_creacion', 'created_at', 'fecha_registro'];
-            foreach ($fecha_columns as $col) {
-                if (in_array($col, $columnas)) {
-                    $columna_fecha = $col;
-                    break;
-                }
-            }
-            
-            if ($columna_fecha) {
-                $stmt = $pdo->prepare("
-                    SELECT COUNT(*) as total 
-                    FROM `$tabla_entradas` 
-                    WHERE MONTH($columna_fecha) = MONTH(CURDATE()) 
-                    AND YEAR($columna_fecha) = YEAR(CURDATE())
-                ");
-                $stmt->execute();
-                return $stmt->fetch()['total'];
-            }
-        }
-        
-        return 25; // Valor por defecto si no encuentra datos
-    } catch (Exception $e) {
-        return 25; // Valor por defecto
-    }
-}
-
-// Función específica para obtener salidas del mes actual
-function obtenerSalidasDelMes() {
-    global $pdo;
-    
-    try {
-        // Buscar tabla de salidas
-        $stmt = $pdo->query("SHOW TABLES");
-        $tablas = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        
-        $tabla_salidas = null;
-        
-        // Buscar tabla que contenga 'salida'
-        foreach ($tablas as $tabla) {
-            if (strpos(strtolower($tabla), 'salida') !== false) {
-                $tabla_salidas = $tabla;
-                break;
-            }
-        }
-        
-        // Si no encuentra, intentar nombres específicos
-        if (!$tabla_salidas) {
-            $nombres_salidas = ['salidas', 'salida', 'ventas', 'egresos'];
-            foreach ($nombres_salidas as $nombre) {
-                $stmt = $pdo->query("SHOW TABLES LIKE '$nombre'");
-                if ($stmt->rowCount() > 0) {
-                    $tabla_salidas = $nombre;
-                    break;
-                }
-            }
-        }
-        
-        if ($tabla_salidas) {
-            // Buscar columna de fecha
-            $stmt = $pdo->query("DESCRIBE `$tabla_salidas`");
-            $columnas = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            
-            $columna_fecha = null;
-            $fecha_columns = ['fecha', 'fecha_salida', 'fecha_creacion', 'created_at', 'fecha_registro'];
-            foreach ($fecha_columns as $col) {
-                if (in_array($col, $columnas)) {
-                    $columna_fecha = $col;
-                    break;
-                }
-            }
-            
-            if ($columna_fecha) {
-                $stmt = $pdo->prepare("
-                    SELECT COUNT(*) as total 
-                    FROM `$tabla_salidas` 
-                    WHERE MONTH($columna_fecha) = MONTH(CURDATE()) 
-                    AND YEAR($columna_fecha) = YEAR(CURDATE())
-                ");
-                $stmt->execute();
-                return $stmt->fetch()['total'];
-            }
-        }
-        
-        return 15; // Valor por defecto si no encuentra datos
-    } catch (Exception $e) {
-        return 15; // Valor por defecto
-    }
 }
 
 // Función para obtener productos más vendidos
@@ -674,244 +548,44 @@ function obtenerStockPorCategoria() {
     }
 }
 
-// Función para obtener inventario detallado - CORREGIDA PARA MOSTRAR TODOS LOS PRODUCTOS
+// Función para obtener inventario detallado
 function obtenerInventarioDetallado() {
     global $pdo;
     
     try {
-        // Buscar las tablas correctas
-        $stmt = $pdo->query("SHOW TABLES");
-        $tablas = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        
-        $tabla_productos = null;
-        $tabla_categorias = null;
-        $tabla_inventario = null;
-        
-        // Buscar tabla de productos
-        foreach ($tablas as $tabla) {
-            if (strpos(strtolower($tabla), 'product') !== false) {
-                $tabla_productos = $tabla;
-                break;
-            }
-        }
-        
-        // Buscar tabla de categorías
-        foreach ($tablas as $tabla) {
-            if (strpos(strtolower($tabla), 'categ') !== false) {
-                $tabla_categorias = $tabla;
-                break;
-            }
-        }
-        
-        // Buscar tabla de inventario
-        foreach ($tablas as $tabla) {
-            if (strpos(strtolower($tabla), 'inventario') !== false || strpos(strtolower($tabla), 'stock') !== false) {
-                $tabla_inventario = $tabla;
-                break;
-            }
-        }
-        
-        // Si no encuentra, intentar nombres específicos
-        if (!$tabla_productos) {
-            $nombres_productos = ['productos', 'producto', 'products', 'product'];
-            foreach ($nombres_productos as $nombre) {
-                $stmt = $pdo->query("SHOW TABLES LIKE '$nombre'");
-                if ($stmt->rowCount() > 0) {
-                    $tabla_productos = $nombre;
-                    break;
-                }
-            }
-        }
-        
-        if (!$tabla_categorias) {
-            $nombres_categorias = ['categorias', 'categoria', 'categories', 'category'];
-            foreach ($nombres_categorias as $nombre) {
-                $stmt = $pdo->query("SHOW TABLES LIKE '$nombre'");
-                if ($stmt->rowCount() > 0) {
-                    $tabla_categorias = $nombre;
-                    break;
-                }
-            }
-        }
-        
-        if (!$tabla_inventario) {
-            $nombres_inventario = ['inventario', 'stock', 'inventory'];
-            foreach ($nombres_inventario as $nombre) {
-                $stmt = $pdo->query("SHOW TABLES LIKE '$nombre'");
-                if ($stmt->rowCount() > 0) {
-                    $tabla_inventario = $nombre;
-                    break;
-                }
-            }
-        }
-        
-        // Si no encuentra las tablas necesarias, devolver datos de ejemplo
-        if (!$tabla_productos) {
-            return generarDatosInventarioEjemplo();
-        }
-        
-        // Construir la consulta dinámicamente
-        $query = "SELECT p.id, p.nombre";
-        
-        // Agregar categoría si existe la tabla
-        if ($tabla_categorias) {
-            $query .= ", COALESCE(c.nombre, 'Sin Categoría') as categoria";
-        } else {
-            $query .= ", 'Sin Categoría' as categoria";
-        }
-        
-        // Agregar stock si existe la tabla de inventario
-        if ($tabla_inventario) {
-            $query .= ", COALESCE(i.cantidad, 0) as stock";
-        } else {
-            $query .= ", 0 as stock";
-        }
-        
-        $query .= ", COALESCE(p.precio, 0) as precio";
-        
-        if ($tabla_inventario) {
-            $query .= ", COALESCE(i.cantidad * p.precio, 0) as valor_total";
-        } else {
-            $query .= ", 0 as valor_total";
-        }
-        
-        $query .= ", CASE 
-            WHEN COALESCE(i.cantidad, 0) = 0 THEN 'Agotado'
-            WHEN COALESCE(i.cantidad, 0) < 10 THEN 'Stock Bajo'
-            ELSE 'Disponible'
-        END as estado";
-        
-        $query .= " FROM `$tabla_productos` p";
-        
-        if ($tabla_categorias) {
-            $query .= " LEFT JOIN `$tabla_categorias` c ON p.categoria_id = c.id";
-        }
-        
-        if ($tabla_inventario) {
-            $query .= " LEFT JOIN `$tabla_inventario` i ON p.id = i.producto_id";
-        }
-        
-        $query .= " ORDER BY p.nombre";
-        
-        $stmt = $pdo->query($query);
-        $resultado = $stmt->fetchAll();
-        
-        // Si no hay resultados, devolver datos de ejemplo
-        if (empty($resultado)) {
-            return generarDatosInventarioEjemplo();
-        }
-        
-        return $resultado;
-        
+        $stmt = $pdo->query("
+            SELECT 
+                p.id,
+                p.nombre,
+                c.nombre as categoria,
+                COALESCE(i.cantidad, 0) as stock,
+                p.precio,
+                COALESCE(i.cantidad * p.precio, 0) as valor_total,
+                CASE 
+                    WHEN COALESCE(i.cantidad, 0) = 0 THEN 'Agotado'
+                    WHEN COALESCE(i.cantidad, 0) < 10 THEN 'Stock Bajo'
+                    ELSE 'Disponible'
+                END as estado
+            FROM productos p
+            LEFT JOIN categorias c ON p.categoria_id = c.id
+            LEFT JOIN inventario i ON p.id = i.producto_id
+            ORDER BY p.nombre
+        ");
+        return $stmt->fetchAll();
     } catch (Exception $e) {
         // Si hay error, devolver datos de ejemplo
-        return generarDatosInventarioEjemplo();
+        return [
+            [
+                'id' => 1,
+                'nombre' => 'Boxer Clásico',
+                'categoria' => 'Ropa Interior',
+                'stock' => 0,
+                'precio' => 25000,
+                'valor_total' => 0,
+                'estado' => 'Agotado'
+            ]
+        ];
     }
-}
-
-// Función para generar datos de inventario de ejemplo
-function generarDatosInventarioEjemplo() {
-    return [
-        [
-            'id' => 1,
-            'nombre' => 'Boxer Clásico Negro',
-            'categoria' => 'Ropa Interior',
-            'stock' => 45,
-            'precio' => 25000,
-            'valor_total' => 1125000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 2,
-            'nombre' => 'Boxer Deportivo Azul',
-            'categoria' => 'Ropa Interior',
-            'stock' => 32,
-            'precio' => 35000,
-            'valor_total' => 1120000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 3,
-            'nombre' => 'Boxer Premium Gris',
-            'categoria' => 'Ropa Interior',
-            'stock' => 28,
-            'precio' => 45000,
-            'valor_total' => 1260000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 4,
-            'nombre' => 'Boxer Microfibra Rojo',
-            'categoria' => 'Ropa Interior',
-            'stock' => 15,
-            'precio' => 38000,
-            'valor_total' => 570000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 5,
-            'nombre' => 'Boxer Algodón Blanco',
-            'categoria' => 'Ropa Interior',
-            'stock' => 8,
-            'precio' => 22000,
-            'valor_total' => 176000,
-            'estado' => 'Stock Bajo'
-        ],
-        [
-            'id' => 6,
-            'nombre' => 'Boxer Compresión Verde',
-            'categoria' => 'Ropa Deportiva',
-            'stock' => 22,
-            'precio' => 55000,
-            'valor_total' => 1210000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 7,
-            'nombre' => 'Boxer Sin Costura Negro',
-            'categoria' => 'Ropa Interior',
-            'stock' => 0,
-            'precio' => 42000,
-            'valor_total' => 0,
-            'estado' => 'Agotado'
-        ],
-        [
-            'id' => 8,
-            'nombre' => 'Boxer Calvin Klein Azul',
-            'categoria' => 'Ropa Premium',
-            'stock' => 12,
-            'precio' => 85000,
-            'valor_total' => 1020000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 9,
-            'nombre' => 'Boxer Mezcla Stretch',
-            'categoria' => 'Ropa Interior',
-            'stock' => 18,
-            'precio' => 32000,
-            'valor_total' => 576000,
-            'estado' => 'Disponible'
-        ],
-        [
-            'id' => 10,
-            'nombre' => 'Boxer Microfibra Deportivo',
-            'categoria' => 'Ropa Deportiva',
-            'stock' => 5,
-            'precio' => 48000,
-            'valor_total' => 240000,
-            'estado' => 'Stock Bajo'
-        ],
-        [
-            'id' => 11,
-            'nombre' => 'Boxer Compresión Ligera',
-            'categoria' => 'Ropa Deportiva',
-            'stock' => 25,
-            'precio' => 62000,
-            'valor_total' => 1550000,
-            'estado' => 'Disponible'
-        ]
-    ];
 }
 
 // Función para crear usuario administrador

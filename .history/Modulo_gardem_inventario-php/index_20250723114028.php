@@ -166,9 +166,9 @@ $page = $_GET['page'] ?? 'menu_principal';
                 </div>
             </div>
             
-            <!-- Tarjetas de estadísticas -->
+            <!-- Tarjetas de alertas y proveedores -->
             <div class="row mb-4">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="card bg-danger text-white">
                         <div class="card-body">
                             <h5><i class="fas fa-exclamation-triangle"></i> Agotados</h5>
@@ -177,7 +177,7 @@ $page = $_GET['page'] ?? 'menu_principal';
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="card bg-warning text-white">
                         <div class="card-body">
                             <h5><i class="fas fa-exclamation-circle"></i> Stock Bajo</h5>
@@ -186,7 +186,7 @@ $page = $_GET['page'] ?? 'menu_principal';
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="card bg-secondary text-white">
                         <div class="card-body">
                             <h5><i class="fas fa-truck"></i> Proveedores</h5>
@@ -195,30 +195,30 @@ $page = $_GET['page'] ?? 'menu_principal';
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="card bg-success text-white">
                         <div class="card-body">
-                            <h5><i class="fas fa-arrow-down"></i> Entradas</h5>
+                            <h5><i class="fas fa-arrow-down"></i> Entradas Mes</h5>
                             <h3><?php echo obtenerEntradasDelMes(); ?></h3>
                             <small>Este mes</small>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="card bg-danger text-white">
                         <div class="card-body">
-                            <h5><i class="fas fa-arrow-up"></i> Salidas</h5>
+                            <h5><i class="fas fa-arrow-up"></i> Salidas Mes</h5>
                             <h3><?php echo obtenerSalidasDelMes(); ?></h3>
                             <small>Este mes</small>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="card bg-dark text-white">
                         <div class="card-body">
-                            <h5><i class="fas fa-chart-line"></i> Total</h5>
+                            <h5><i class="fas fa-chart-line"></i> Total Movimientos</h5>
                             <h3><?php echo $stats['movimientos_mes']; ?></h3>
-                            <small>Movimientos</small>
+                            <small>Este mes</small>
                         </div>
                     </div>
                 </div>
