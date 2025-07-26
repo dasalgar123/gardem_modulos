@@ -1,0 +1,511 @@
+/* ========================================
+   ESTILOS PARA INVENTARIO - MÓDULO VENDEDOR
+   ======================================== */
+
+/* Contenedor principal */
+.main-content {
+    flex: 1;
+    background: #fafafa;
+    color: #424242;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Header del contenido */
+.content-header {
+    background: white;
+    padding: 20px 30px;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+}
+
+.header-content h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.header-content h1 i {
+    color: #667eea;
+    margin-right: 10px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Contenido principal */
+.content {
+    padding: 20px 30px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.content-inventario {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Tarjeta de filtros */
+.filters-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 25px 30px;
+    margin-bottom: 20px;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.filters-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+    white-space: nowrap;
+}
+
+.filters-card h3 i {
+    color: #667eea;
+    margin-right: 8px;
+}
+
+.filters-form {
+    display: flex;
+    gap: 15px;
+    align-items: end;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    min-width: 200px;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Tarjetas de resumen */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+    max-width: 100%;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.summary-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+}
+
+.summary-icon.stock-disponible {
+    background: #28a745;
+}
+
+.summary-icon.stock-bajo {
+    background: #ffc107;
+}
+
+.summary-icon.stock-agotado {
+    background: #3b82f6;
+}
+
+.summary-content h3 {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.summary-content p {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+/* Tarjeta de inventario */
+.inventario-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.card-header {
+    background: #f8f9fa;
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.card-header h2 i {
+    color: #667eea;
+    margin-right: 8px;
+}
+
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.total-items {
+    background: #667eea;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.estado-funcionamiento {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.estado-funcionamiento.ok {
+    background: #28a745;
+    color: white;
+}
+
+.estado-funcionamiento.error {
+    background: #dc3545;
+    color: white;
+}
+
+.estado-funcionamiento.advertencia {
+    background: #ffc107;
+    color: #212529;
+}
+
+.estado-funcionamiento.info {
+    background: #17a2b8;
+    color: white;
+}
+
+/* Contenedor de tabla */
+.table-container {
+    overflow-x: auto;
+    margin-top: 0;
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Tabla de inventario */
+.inventario-table {
+    width: 100%;
+    min-width: 1200px;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: fixed;
+}
+
+.inventario-table th {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.inventario-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.inventario-table tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease;
+}
+
+/* Ancho específico para la columna de producto */
+.inventario-table th:first-child,
+.inventario-table td:first-child {
+    width: 25%;
+    min-width: 250px;
+    max-width: 300px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+/* Ajustar ancho de otras columnas */
+.inventario-table th:nth-child(2),
+.inventario-table td:nth-child(2) {
+    width: 10%;
+    min-width: 80px;
+}
+
+.inventario-table th:nth-child(3),
+.inventario-table td:nth-child(3) {
+    width: 10%;
+    min-width: 80px;
+}
+
+.inventario-table th:nth-child(4),
+.inventario-table td:nth-child(4) {
+    width: 10%;
+    min-width: 80px;
+}
+
+.inventario-table th:nth-child(5),
+.inventario-table td:nth-child(5) {
+    width: 10%;
+    min-width: 80px;
+}
+
+.inventario-table th:nth-child(6),
+.inventario-table td:nth-child(6) {
+    width: 12%;
+    min-width: 100px;
+}
+
+.inventario-table th:nth-child(7),
+.inventario-table td:nth-child(7) {
+    width: 12%;
+    min-width: 100px;
+}
+
+.inventario-table th:nth-child(8),
+.inventario-table td:nth-child(8) {
+    width: 11%;
+    min-width: 100px;
+}
+
+/* Estados de stock */
+.stock-disponible {
+    background-color: #f8fff9;
+}
+
+.stock-bajo {
+    background-color: #fffbf0;
+}
+
+.stock-agotado {
+    background-color: #f0f8ff;
+}
+
+/* Badges */
+.badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.bg-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.bg-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.bg-secondary {
+    background-color: #e2e3e5;
+    color: #383d41;
+}
+
+.bg-primary {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.bg-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.bg-dark {
+    background-color: #d6d8db;
+    color: #1b1e21;
+}
+
+/* Mensaje de no datos */
+.no-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.no-data i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #ccc;
+}
+
+.no-data p {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* Botones */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #5a67d8;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+.btn i {
+    font-size: 14px;
+}
+
+/* Alertas */
+.alert {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-danger {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.alert i {
+    margin-right: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .header-actions {
+        flex-wrap: wrap;
+    }
+    
+    .filters-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group input,
+    .filter-group select {
+        min-width: auto;
+    }
+    
+    .summary-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .inventario-table {
+        font-size: 12px;
+    }
+    
+    .inventario-table th,
+    .inventario-table td {
+        padding: 8px 10px;
+    }
+} 
